@@ -29,7 +29,7 @@ protobuf==3.6.0
 ptyprocess==0.6.0
 pyasn1==0.4.3
 pyasn1-modules==0.2.1
-pycryptodome==3.4.3
+pycryptodome==3.6.6
 Pygments==2.2.0
 Pyrebase==3.0.27
 python-jwt==2.0.1
