@@ -1,74 +1,40 @@
-# Edited Image Detetction
+# Edited Image Detection
 
-Uses Error Level Analysis, Connected Components Labelling and Union Find Algorithm to detect digitally edited images.
+Official documents like driving license, aadhar card, and PAN cards are used everywhere as a proof of identity. They are also clicked on smartphones to make them accessible digitally. Many times these images are edited using photoshop softwares which such precision that they become indistinguishable to the human eye.
 
-## Getting Started
+This project attempts to analyse such images and detect traces which makes them different from their original counterparts.
 
-To run the script on your machine you will have to follow these steps.
-The entire code is built to run on Python v3.6.5+ and PIP v18.0+
+We make use of `Error Level Analysis (ELA)` for proof of possible tampering of digital images.
 
-### Dependencies
+ELA can be performed on images with lossy compression (like JPEG). By definition, ELA permits identifying areas within an image that are at different compression levels. With original images, the entire picture is roughly at the same level. Any section of the image at a different level might indicate a digital modification.
 
-You will have to install the following dependencies using PIP (Package Management System for Python).
-All dependencies can be installed using the following command.
+This module simply attempts to detect edited images and is not a full-proof source of truth, however, it should be used as a pipeline to further investigate images that are flagged using this algorithm.
 
-```
-pip3 install -r requirements.txt
-```
+### Assumptions
+There are a set of assumptions that should be in place for the algorithm to work. They are - 
+- The images provided should be in JPEG format.<br>
+    - The algorithm does not work with PNG images
+- The images provided should not be heavily compressed.<br>
+    - Heavy compression strips the image of a lot of important data thus the algorithm fails to find significant differences in different parts of an image
+- Typed characters on top of original images will produce sharp edges.<br>
+    - This will be explained in detail in the description.
 
-### Setting up server
+### Description
+The algorithm works in the following steps - 
+- Load the image provided by user (via URL or filepath)
+- Sharpen the image by a small factor (to remove noisy regions) and convert the whole image to black and white.
+- Apply Error Level Analysis -
+    + Compress the image by 85% (constant value)
+    + Generate a new image which is a pixel by pixel difference between the two images.<br>
+    `difference_img = abs(original_img - compressed_img)`
+- The difference image will not be visible because of close difference between original and compressed image. To solve this, we will find the tonal value of extrema (which is maximum pixel value) and use that to increase the brightness of the image.
 
-You will have to start the server using the following command in your terminal.
+If an image is edited, it will contain signatures that do not match that of an original image. By following the above process, we get a result that will contain white pixels scattered throughout the image. The scattering is random in an unedited image, but for an edited image, these pixels will appear very close to each other and specifically in the region of the edited portion.
 
-```
-python3 app.py
-```
-By default the server will run on http://127.0.0.1:5000/
+- The above indentification is a visual process, so the module will use Connected Components Labelling (CCL) and Union-Find Algorithm (UFA) to create and analyse clusters.
+    + A cluster is defined as a group of very close pixels spanning in a portion of the image.
 
-You can test the API by -
-1. 'POST' request on the URL - http://127.0.0.1:5000/upload
-2. 'Content-Type' as 'multipart/form-data'
-3.  'image': value - JPEG/JPG File
-4.  'url'  : value - URL of the image.
-```
-If both the keys are passed to the POST request, 'image' is given higher priority.
-```
+- The final output will be a boolean value which will indicate if the image is edited or not.
 
-### Note
-The above method will run on your local host, to run it on custom IP, use the following command.
-```
-cd /path/to/this/dir/
-export FLASK_APP=app.py --host=0.0.0.0 (Your custom IP)
-flask run
-```
-For any other issues with running the app, check the following link. (http://flask.pocoo.org/docs/1.0/quickstart/)
-
-
-### Running the tests
-The response recieved when an edited image is passed.
-```
-{
-    "edited": true,
-    "maxToTotalRatio": 86.66666666666667
-}
-```
-The response recieved when an original image is passed.
-```
-{
-    "edited": false,
-    "maxToTotalRatio": 34.78260869565217
-}
-```
-"edited" returns 'true' when "maxToTotalRatio" is above 80% (You can change this threshold)
-
-## Built With
-
-* [Pillow](https://pillow.readthedocs.io/en/5.3.x/) - Python Imaging Library
-* [Flask](http://flask.pocoo.org) - Web Development
-
-## Authors
-
-* **Kevin Jain** - *Initial work* - [GitHub](https://github.com/thatsKevinJain)
-* **Utkarsh Sharma** - *Big help and inspiration* - [GitHub](https://github.com/Utkarsh85)
-
-
+### How to install
+Check this [install guide](https://github.com/thatsKevinJain/edited-images-analyser/blob/master/INSTALL.md) to setup and test this library. It won't take more than 2 minutes :)
