@@ -1,4 +1,4 @@
-# Edited Image Detection
+# Edited Images Analyser (EIAN)
 
 Uses Error Level Analysis, Connected Components Labelling and Union Find Algorithm to detect digitally edited images.
 

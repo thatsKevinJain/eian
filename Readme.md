@@ -1,4 +1,4 @@
-# Edited Image Detection
+# Edited Images Analyser (EIAN)
 
 Official documents like driving license, aadhar card, and PAN cards are used everywhere as a proof of identity. They are also clicked on smartphones to make them accessible digitally. Many times these images are edited using photoshop softwares which such precision that they become indistinguishable to the human eye.
 
@@ -37,4 +37,4 @@ If an image is edited, it will contain signatures that do not match that of an o
 - The final output will be a boolean value which will indicate if the image is edited or not.
 
 ### How to install
-Check this [install guide](https://github.com/thatsKevinJain/edited-images-analyser/blob/master/INSTALL.md) to setup and test this library. It won't take more than 2 minutes :)
+Check this [install guide](https://github.com/thatsKevinJain/eian/blob/master/INSTALL.md) to setup and test this library. It won't take more than 2 minutes :)
